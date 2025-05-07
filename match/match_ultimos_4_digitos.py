@@ -51,3 +51,4 @@ if __name__ == "__main__":
     # Extraer últimos 4 dígitos
     codigo_busqueda = codigo_completo[-4:]
     buscar_codigo(codigo_busqueda)
+    
