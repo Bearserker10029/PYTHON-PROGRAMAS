@@ -25,7 +25,7 @@ def paralelizar(n:int):
 
         for i in range(num):
             inicio = i * division
-            fin = (i + 1) * division if i < num - 1 else n
+            fin = (i + 1) * division
             rangos.append((inicio, fin))
 
         with Pool(processes=num) as p:
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         print(f"numero {n}")
         print(f"Tiempo de ejecución serial: {tiempo_serial}")
 
-        print(suma_paralela)
+        #print(suma_paralela)
         for i in range(len(proc_num)):
 
             print(f"p = {proc_num[i]}, Tiempo de ejecución paralelo: {tiempo_paralelo[i]}")
