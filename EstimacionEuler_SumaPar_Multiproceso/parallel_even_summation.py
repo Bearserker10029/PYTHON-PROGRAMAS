@@ -55,7 +55,7 @@ if __name__ == '__main__':
         for i in range(len(suma_paralela)):
             assert suma_paralela[i] == suma_serial == n*(n+1), "suma incorrecta"
 
-        print(f"numero {n}")
+        print(f"\nnumero {n}")
         print(f"Tiempo de ejecución serial: {tiempo_serial}")
 
         #print(suma_paralela)
