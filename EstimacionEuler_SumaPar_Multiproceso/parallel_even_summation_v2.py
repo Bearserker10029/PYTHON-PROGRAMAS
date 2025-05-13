@@ -19,10 +19,10 @@ def paralelizar(n:int):
     proc_num=[4,8,16]
     suma_paralela=[]
     tiempo_paralelo=[]
-    
+    rangos=list(range(n+1))
     for num in proc_num:        
         inicio_paralelo=time.perf_counter()
-        rangos=list(range(n+1))
+        
         #print(rangos)
 
         with Pool(processes=num) as p:
