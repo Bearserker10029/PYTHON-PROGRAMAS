@@ -4,7 +4,7 @@ import numpy as np
 SOCK_BUFFER = 1024
 
 def promedio(dato:str):
-    valor=[]
+    valor=list()
     for fila in filas[1:]:
         if dato in fila:
             columnas = fila.split(",")
@@ -17,8 +17,8 @@ def promedio(dato:str):
 def canal():
     ventas_online = 0
     ventas_offline = 0
-    valor_on=[]
-    valor_off=[]
+    valor_on=list()
+    valor_off=list()
     for fila in filas[1:]:
         if "Online" in fila:
             columnas_on = fila.split(",")
@@ -41,13 +41,14 @@ def canal():
     return(f"El mejor canal de venta fue {canal_venta} con {numero_ventas} ventas y con un total de {total_ventas} soles.")
 
 def desviacion(dato:str):
-    valor=[]
+    valor=list()
     for fila in filas[1:]:
         if dato in fila:
             columnas = fila.split(",")
             valor.append(float(columnas[8]))
 
-    desviacion_estandar=np.std(valor)
+    valores_np = np.array(valor)
+    desviacion_estandar=np.std(valores_np)
     return f"La desviación estándar de {dato} es {desviacion_estandar:.2f}."
 
 def cantclient():
@@ -60,7 +61,7 @@ def cantclient():
     return f"Los clientes con ventas superiores al promedio son: {cantidad_clientes}."
 
 def distribucion_venta(dato:str):
-    valor=[]
+    valor=list()
     for fila in filas[1:]:
         if dato in fila:
             columnas=fila.split(",")
@@ -98,7 +99,7 @@ if __name__ == '__main__':
         print(f"Conexion de {client[0]}:{client[1]}")
 
         try:
-            consultas=[]
+            consultas=list()
             while True:
                 data = conn.recv(SOCK_BUFFER)
                 
