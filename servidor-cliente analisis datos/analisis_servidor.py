@@ -66,11 +66,11 @@ def distribucion_venta(dato:str):
             columnas=fila.split(",")
             valor.append(float(columnas[8]))
 
-    valor.sort()
-    media = sum(valor)/len(valor)
-    mediana =valor[len(valor)//2]
-    mínimo =valor[0]
-    máximo =valor[-1]
+    valores_np = np.array(valor)
+    media = np.mean(valores_np)
+    mediana = np.median(valores_np)
+    mínimo = np.min(valores_np)
+    máximo = np.max(valores_np)
 
     return f"Distribución de ventas de {dato}: media {media:.2f}, mediana {mediana:.2f}, mínimo {mínimo:.2f}, máximo {máximo:.2f}."
 
