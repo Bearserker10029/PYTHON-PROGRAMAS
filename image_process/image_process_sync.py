@@ -28,8 +28,8 @@ def main():
     # I/O-bound operation: Read image URLs from a text file
     image_urls = read_image_urls('url_imagenes.txt')
 
-    for idx, url in enumerate(image_urls):
-        print(f"Processing image {idx+1}/{len(image_urls)}")
+    for idx, url in enumerate(image_urls,start=1):
+        print(f"Processing image {idx}/{len(image_urls)}")
 
         try:
             # I/O-bound operation: Download the image

@@ -46,7 +46,7 @@ def main():
     if not os.path.exists('processed_images_multiprocessing_pool'):
         os.mkdir('processed_images_multiprocessing_pool')
     image_urls = read_image_urls('url_imagenes.txt')
-    args = [(idx + 1, url) for idx, url in enumerate(image_urls)]
+    args = [(idx, url) for idx, url in enumerate(image_urls,start=1)]
     num_processes = 4  # Ajustar según las capacidades del sistema
 
     with Pool(processes=num_processes) as pool:

@@ -49,8 +49,8 @@ def main():
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {
-            executor.submit(process_single_image, idx + 1, url): idx
-            for idx, url in enumerate(image_urls)
+            executor.submit(process_single_image, idx, url): idx
+            for idx, url in enumerate(image_urls,start=1)
         }
 
         for future in as_completed(futures):

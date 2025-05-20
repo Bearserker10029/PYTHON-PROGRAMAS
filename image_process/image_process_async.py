@@ -64,8 +64,8 @@ async def main():
     async with aiohttp.ClientSession() as session:
         # Create a list of tasks for asyncio.gather
         tasks = [
-            process_single_image(idx + 1, url, session)
-            for idx, url in enumerate(image_urls)
+            process_single_image(idx, url, session)
+            for idx, url in enumerate(image_urls,start=1)
         ]
 
         # Run all tasks concurrently
