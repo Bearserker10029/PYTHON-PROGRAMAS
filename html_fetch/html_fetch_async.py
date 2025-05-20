@@ -20,7 +20,7 @@ async def fetch_html(session: aiohttp.ClientSession, url: str) -> str:
         resp.raise_for_status()
         return await resp.text()
 
-def analyze_html(html: str) -> (int, Counter):
+def analyze_html(html: str) -> tuple[int, Counter]:
     """Parses HTML, cuenta enlaces y palabras."""
     soup = BeautifulSoup(html, 'html.parser')
 
