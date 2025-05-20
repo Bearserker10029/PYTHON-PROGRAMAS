@@ -23,7 +23,7 @@ if __name__ == '__main__':
         proceso.start()
         procesos.append(proceso)
 
-    for _ in procesos:
+    for proceso in procesos:
         proceso.join()
 
     fin = time.perf_counter()
