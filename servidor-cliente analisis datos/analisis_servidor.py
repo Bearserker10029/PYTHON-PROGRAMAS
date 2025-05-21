@@ -9,9 +9,9 @@ def promedio(dato:str):
         if dato in fila:
             columnas = fila.split(",")
             valor.append(float(columnas[5]))
-            break
 
-    promedio= sum(valor)//len(valor)
+
+    promedio= sum(valor)/len(valor)
     return f"El promedio de ventas de {dato} es {promedio:.2f}."
 
 def canal():
@@ -109,7 +109,8 @@ if __name__ == '__main__':
                     data=data.decode("utf-8")
                     if "promedio de ventas de" in data:
                         lista=[valor for valor in data.split(" ")]
-                        dato= lista[4]
+                        dato= ' '.join(lista[4:])
+                        print(f"El dato es {dato}")
                         consulta= promedio(dato)
                         
                     if "mejor canal de venta"  in data:
@@ -117,7 +118,7 @@ if __name__ == '__main__':
 
                     if "desviación estándar de ventas de" in data:
                         lista=[valor for valor in data.split(" ")]
-                        dato= lista[5]
+                        dato= ' '.join(lista[5:])
                         consulta=desviacion(dato)
 
                     if "cantidad de clientes con ventas superiores al promedio" in data:
@@ -125,7 +126,7 @@ if __name__ == '__main__':
 
                     if "distribución de ventas de" in data:
                         lista=[valor for valor in data.split(" ")]
-                        dato= lista[4]
+                        dato= ' '.join(lista[4:])
                         consulta=distribucion_venta(dato)
 
                     if "salir" in data:
