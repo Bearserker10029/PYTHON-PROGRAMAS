@@ -63,9 +63,17 @@ def busca_letra(p: str, l: str, lp: list[str]) -> Union[list[str], bool]:
 
 
 # palabras = ["arquitectura", "computadoras", "telecomunicaciones", "python", "ahorcado", "universidad", "alumnos", "perro", "proyector"]
-if not os.path.exists("palabras.txt"):
-    print("Error: palabras.txt no existe.")
-    exit()
+if not os.path.exists("palabras.txt") or os.stat("palabras.txt").st_size == 0:
+    print("Generando archivo de palabras...")
+    try:
+        from generador_palabra import generar_palabras
+        if not generar_palabras():
+            print("No se pudo generar el archivo de palabras.")
+            exit()
+    except Exception as e:
+        print(f"Error al importar el generador: {e}")
+        exit()
+
 palabras = carga_palabras(ruta="palabras.txt", sep="\n")
 
 cant_adiv=input("Cantidad de letras a adivinar:") 
