@@ -145,7 +145,22 @@ if __name__ == '__main__':
     fin = time.perf_counter()
     duracion = fin - inicio
     intentos_fallidos=intentos
-    stat = f"{palabra},{status},{duracion},{intentos_adivinar+1},{intentos_fallidos+1},{''.join(letras_adivinadas)}\n"
 
-    with open("stats.csv", "a") as f:
+    archivo = "stats.csv"
+    encabezado = (
+    "Palabra seleccionada,"
+    "Si ganó o perdió,"
+    "Duración de la partida en segundos,"
+    "Intentos hasta adivinar,"
+    "Intentos fallidos,"
+    "Letras adivinadas\n"
+)
+    
+    stat = f"{palabra},{status},{duracion:.4f} segundos,{intentos_adivinar+1},{intentos_fallidos+1},{''.join(letras_adivinadas)}\n"
+
+    es_nuevo = not os.path.exists(archivo) or os.stat(archivo).st_size == 0
+    # Si el archivo no existe o está vacío, escribimos el encabezado
+    with open(archivo, "a", encoding="utf-8") as f:
+        if es_nuevo:
+            f.write(encabezado)
         f.write(stat)
