@@ -1,7 +1,7 @@
 import requests
 import random
 import sys
-from concurrent.futures import ProcessPoolExecutor
+import time
 
 def procesar_linea(linea):
     palabra = linea.split('/')[0].strip().lower()
@@ -12,26 +12,27 @@ def procesar_linea(linea):
 def generar_palabras():
     url = "https://raw.githubusercontent.com/titoBouzout/Dictionaries/master/Spanish.dic"
     try:
+        inicio = time.time()
+        
+        # Descargar el diccionario
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        
         lineas = response.text.splitlines()
-        
-        # Procesamiento paralelo
-        with ProcessPoolExecutor() as executor:
-            resultados = list(executor.map(procesar_linea, lineas))
-        
-        # Filtrar y eliminar duplicados
-        palabras = list(set([p for p in resultados if p is not None]))
-        
+
+        # Procesamiento secuencial
+        resultados = [procesar_linea(linea) for linea in lineas]
+        palabras = list(set(filter(None, resultados)))
+
         if len(palabras) < 1000:
             print(f"Error: Solo hay {len(palabras)} palabras válidas.", file=sys.stderr)
             return False
-        
-        # Selección aleatoria y escritura
+
+        # Guardar palabras aleatorias
         with open("palabras.txt", "w", encoding="utf-8") as f:
             f.write("\n".join(random.sample(palabras, 1000)))
-            
+        
+        fin = time.time()
+        print(f"¡Archivo generado correctamente en {fin - inicio:.4f} segundos!")
         return True
 
     except Exception as e:
@@ -39,7 +40,4 @@ def generar_palabras():
         return False
 
 if __name__ == "__main__":
-    if generar_palabras():
-        print("¡Archivo generado correctamente!")
-    else:
-        print("Error al generar el archivo.", file=sys.stderr)
+    generar_palabras()
