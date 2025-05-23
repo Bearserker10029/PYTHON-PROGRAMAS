@@ -2,6 +2,8 @@ import requests
 import random
 import sys
 import time
+import os
+import shutil
 
 def procesar_linea(linea):
     palabra = linea.split('/')[0].strip().lower()
@@ -39,5 +41,15 @@ def generar_palabras():
         print(f"Error crítico: {e}", file=sys.stderr)
         return False
 
+def eliminar_pycache():
+    pycache_path = "__pycache__"
+    if os.path.exists(pycache_path) and os.path.isdir(pycache_path):
+        try:
+            shutil.rmtree(pycache_path)
+            print("Carpeta '__pycache__' eliminada correctamente.")
+        except Exception as e:
+            print(f"No se pudo eliminar '__pycache__': {e}", file=sys.stderr)
+
 if __name__ == "__main__":
-    generar_palabras()
+    if generar_palabras():
+        eliminar_pycache()

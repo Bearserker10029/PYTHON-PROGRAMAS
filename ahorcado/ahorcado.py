@@ -25,7 +25,7 @@ def actualiza_puntaje(lp: list[str], fallos: int) -> None:
     :param fallos: Cantidad de fallos que todavia el usuario puede cometer.
     :returns: None
     """
-    print(f"{' '.join(lp)} - Itentos: {fallos}")
+    print(f"{' '.join(lp)} - Intentos: {fallos}")
 
 
 def lee_letra() -> str:
@@ -132,7 +132,7 @@ if __name__ == '__main__':
             intentos -= 1
 
         if intentos == 0:
-            print("Lo siento ha perdido el juego 😔")
+            print(f"Lo siento ha perdido el juego 😔. La palabra era {palabra}.")
             status = "perdio"
             break
 
