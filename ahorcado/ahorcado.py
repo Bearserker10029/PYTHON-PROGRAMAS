@@ -108,11 +108,11 @@ if __name__ == '__main__':
         if len(entrada) == len(palabra):
             if entrada == palabra:
                 print("¡Ganaste! 🎉")
-                status = "gano"
+                status = "ganó"
                 lista_palabra = list(palabra)
             else:
                 print("¡Perdiste! 😔")
-                status = "perdio"
+                status = "perdió"
                 intentos = 0
             break
 
@@ -133,12 +133,12 @@ if __name__ == '__main__':
 
         if intentos == 0:
             print(f"Lo siento ha perdido el juego 😔. La palabra era {palabra}.")
-            status = "perdio"
+            status = "perdió"
             break
 
         if "_" not in lista_palabra:
             print("Felicitaciones! Ha ganado el juego 🎉")
-            status = "gano"
+            status = "ganó"
             break
 
         intentos_adivinar+=1
