@@ -1,0 +1,2 @@
+
+gcc -shared -fPIC lib_arreglo.c -o lib_arreglo.so 
