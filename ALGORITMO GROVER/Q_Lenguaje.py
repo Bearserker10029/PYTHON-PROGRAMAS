@@ -5,7 +5,6 @@ import math
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from qiskit.visualization import Bloch
 
 ver = vermatrizf
 
@@ -362,53 +361,9 @@ def reducir_qubit(estado, qubit_index, n_qubits=3):
     ket_reducido = vecs[:, idx]
     return ket_reducido
 
-def plot_bloch(qubit_ket, ax=None):
-    bloch = Bloch()
-    bloch.add_states(qubit_ket)
-    if ax is None:
-        bloch.show()
-    else:
-        bloch.render(ax)
-    # Solo para un qubit
-    if len(ket) != 2:
-        print("La esfera de Bloch solo es válida para un qubit.")
-        return
-
-    # Normalizar el estado
-    ket = ket / np.linalg.norm(ket)
-
-    # Calcular coordenadas de Bloch
-    alpha = ket[0]
-    beta = ket[1]
-    theta = 2 * np.arccos(np.abs(alpha))
-    phi = np.angle(beta) - np.angle(alpha)
-
-    x = np.sin(theta) * np.cos(phi)
-    y = np.sin(theta) * np.sin(phi)
-    z = np.cos(theta)
-
-    # Esfera de Bloch
-    fig = plt.figure(figsize=(6,6))
-    ax = fig.add_subplot(111, projection='3d')
-
-    # Esfera
-    u, v = np.mgrid[0:2*np.pi:100j, 0:np.pi:100j]
-    xs = np.cos(u)*np.sin(v)
-    ys = np.sin(u)*np.sin(v)
-    zs = np.cos(v)
-    ax.plot_surface(xs, ys, zs, color='c', alpha=0.1)
-
-    # Ejes
-    ax.quiver(0,0,0,1,0,0,length=1,color='r',arrow_length_ratio=0.1)
-    ax.quiver(0,0,0,0,1,0,length=1,color='g',arrow_length_ratio=0.1)
-    ax.quiver(0,0,0,0,0,1,length=1,color='b',arrow_length_ratio=0.1)
-
-    # Estado
-    ax.quiver(0,0,0,x,y,z,length=1,color='k',arrow_length_ratio=0.2)
-    ax.scatter([x],[y],[z],color='k',s=100)
-
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    ax.set_title('Esfera de Bloch')
-    plt.show()
+def ket_to_bloch_vector(ket):
+    a, b = ket[0], ket[1]
+    x = 2 * np.real(np.conj(a) * b)
+    y = 2 * np.imag(np.conj(b) * a)
+    z = np.abs(a)**2 - np.abs(b)**2
+    return [x, y, z]
