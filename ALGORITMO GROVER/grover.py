@@ -1,10 +1,10 @@
+# Algoritmo de Grover para encontrar un elemento en una lista no ordenada
 from Q_Lenguaje import *
 from math import pi, sqrt, floor
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from multiprocessing import Process
-# Algoritmo de Grover para encontrar un elemento en una lista no ordenada
 
 # Número de qubits
 n_qbits = 3
