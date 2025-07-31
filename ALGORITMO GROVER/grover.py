@@ -101,7 +101,7 @@ def bloch_animacion():
             axes[i].set_title(f'Qubit {i} - Iteración {frame}')
         return vectors
 
-    anim = FuncAnimation(fig, update, frames=len(estados_np), interval=800, blit=False)
+    anim = FuncAnimation(fig, update, frames=len(estados_np), interval=800, blit=False, repeat=False)
     plt.tight_layout()
     plt.show()
 
