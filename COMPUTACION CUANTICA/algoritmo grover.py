@@ -7,23 +7,45 @@ from matplotlib.animation import FuncAnimation
 from multiprocessing import Process
 
 # Número de qubits
-n_qbits = 4
-N = 2 ** n_qbits  # Total de estados posibles
+n_qubits = int(input("Ingrese número de qubits: "))
+N = 2 ** n_qubits  # Total de estados posibles
 
 # --- Lista de soluciones como cadenas binarias ---
-soluciones_binarias = ["1000", "0010"]  # puedes agregar más
+
+soluciones_binarias = list()  # puedes agregar más
+
+print(f"Ingrese soluciones entre 0 y {N - 1} (una por línea). Escriba 'fin' para terminar:")
+
+while True:
+    entrada = input("> ").strip()
+    if entrada.lower() == "fin":
+        break
+    if not entrada.isdigit():
+        print("❌ Entrada inválida. Debe ser un número entero.")
+        continue
+    valor = int(entrada)
+    if not (0 <= valor < N):
+        print(f"❌ Fuera de rango. Debe estar entre 0 y {N - 1}.")
+        continue
+    binario = format(valor, f"0{n_qubits}b")  # Binario con ceros a la izquierda
+    soluciones_binarias.append(binario)
+
+# Mostrar las soluciones ingresadas
+print(f"✅ Soluciones ingresadas: {soluciones_binarias}")
+
+
 estados_marcados = [construir_ket(b) for b in soluciones_binarias]
 M = len(estados_marcados)                 # Número de soluciones marcadas (puedes ajustar si hay más)
 
 # Estado uniforme |s> = h⊗h⊗h |000>
 estado_s = h(ket0)
-for _ in range(n_qbits - 1):
+for _ in range(n_qubits - 1):
     estado_s = tensorial(h(ket0), estado_s)
 # ver(estado_s)
 
-# Identidad en espacio de n_qbits
+# Identidad en espacio de n_qubits
 I_n = I
-for _ in range(n_qbits - 1):
+for _ in range(n_qubits - 1):
     I_n = tensorial(I, I_n)
 # ver(I_n)
 
@@ -31,8 +53,8 @@ for _ in range(n_qbits - 1):
 Uw = construir_oraculo(estados_marcados, I_n)
 # ver(Uw)
 
-# Difusor Us para n_qbits
-Us=groverUs(n_qbits)
+# Difusor Us para n_qubits
+Us=groverUs(n_qubits)
 # ver(Us)
 
 # algoritmo de Grover
@@ -65,8 +87,8 @@ for _ in range(iteraciones):
 # Convertir cada estado a np.array para facilitar reducción por qubit
 estados_np = [np.array([x[0] for x in est], dtype=complex) for est in estados_por_iteracion]
 def bloch_animacion():
-    fig = plt.figure(figsize=(4 * n_qbits, 6))
-    axes = [fig.add_subplot(1, n_qbits, i+1, projection='3d') for i in range(n_qbits)]
+    fig = plt.figure(figsize=(4 * n_qubits, 6))
+    axes = [fig.add_subplot(1, n_qubits, i+1, projection='3d') for i in range(n_qubits)]
     # Dibujar esferas de Bloch vacías
     def plot_bloch_sphere(ax):
         u, v = np.mgrid[0:2*np.pi:100j, 0:np.pi:100j]
@@ -114,13 +136,13 @@ def bloch_animacion():
         set_aspect_equal_3d(ax)
 
     # Inicializar vectores y trayectorias
-    vectors = [None] * n_qbits
-    trayectorias = [[] for _ in range(n_qbits)]
+    vectors = [None] * n_qubits
+    trayectorias = [[] for _ in range(n_qubits)]
 
     # Función de actualización por frame
     def update(frame):
-        for i in range(n_qbits):
-            ket = reducir_qubit(estados_np[frame], i, n_qbits)
+        for i in range(n_qubits):
+            ket = reducir_qubit(estados_np[frame], i, n_qubits)
             bloch_vec = ket_to_bloch_vector(ket)
 
             trayectorias[i].append(bloch_vec)
