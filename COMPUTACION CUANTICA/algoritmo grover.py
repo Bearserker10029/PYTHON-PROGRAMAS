@@ -7,11 +7,11 @@ from matplotlib.animation import FuncAnimation
 from multiprocessing import Process
 
 # Número de qubits
-n_qbits = 5
+n_qbits = 4
 N = 2 ** n_qbits  # Total de estados posibles
 
 # --- Lista de soluciones como cadenas binarias ---
-soluciones_binarias = ["10000", "00100","00001"]  # puedes agregar más
+soluciones_binarias = ["1000", "0010"]  # puedes agregar más
 estados_marcados = [construir_ket(b) for b in soluciones_binarias]
 M = len(estados_marcados)                 # Número de soluciones marcadas (puedes ajustar si hay más)
 
@@ -73,14 +73,45 @@ def bloch_animacion():
         x = np.cos(u)*np.sin(v)
         y = np.sin(u)*np.sin(v)
         z = np.cos(v)
+
+        # Esfera de Bloch
         ax.plot_surface(x, y, z, color='lightblue', alpha=0.3, linewidth=0)
-        ax.set_xlim([-1, 1])
-        ax.set_ylim([-1, 1])
-        ax.set_zlim([-1, 1])
+        
+        # Malla sobre la esfera
+        ax.plot_wireframe(x, y, z, color='gray', linewidth=0.3, alpha=0.4)
+
+        # Ejes X, Y, Z
+        ax.quiver(0, 0, 0, 1, 0, 0, color='green', linewidth=1.5)  # X
+        ax.quiver(0, 0, 0, 0, 1, 0, color='blue', linewidth=1.5)   # Y
+        ax.quiver(0, 0, 0, 0, 0, 1, color='black', linewidth=1.5)  # Z
+
+        # Líneas de referencia (trayectoria ejes)
+        ax.plot([0, 1], [0, 0], [0, 0], linestyle='--', color='green', alpha=0.6)
+        ax.plot([0, 0], [0, 1], [0, 0], linestyle='--', color='blue', alpha=0.6)
+        ax.plot([0, 0], [0, 0], [0, 1], linestyle='--', color='black', alpha=0.6)
+
+        # Etiquetas para |0⟩ y |1⟩
+        ax.text(0, 0, 1.2, r"$|0\rangle$", fontsize=12, color='black')
+        ax.text(0, 0, -1.4, r"$|1\rangle$", fontsize=12, color='black')
+
+        # Ajustes generales
+
+        ax.set_xlim([-1.2, 1.2])
+        ax.set_ylim([-1.2, 1.2])
+        ax.set_zlim([-1.5, 1.5])
         ax.axis('off')
+
+    def set_aspect_equal_3d(ax):
+        extents = np.array([getattr(ax, f'get_{dim}lim')() for dim in 'xyz'])
+        centers = np.mean(extents, axis=1)
+        max_range = np.max(extents[:,1] - extents[:,0]) / 2
+
+        for ctr, dim in zip(centers, 'xyz'):
+            getattr(ax, f'set_{dim}lim')(ctr - max_range, ctr + max_range)
 
     for ax in axes:
         plot_bloch_sphere(ax)
+        set_aspect_equal_3d(ax)
 
     # Inicializar vectores y trayectorias
     vectors = [None] * n_qbits
