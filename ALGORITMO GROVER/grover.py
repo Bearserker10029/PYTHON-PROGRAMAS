@@ -11,7 +11,7 @@ n_qbits = 3
 N = 2 ** n_qbits  # Total de estados posibles
 
 # --- Lista de soluciones como cadenas binarias ---
-soluciones_binarias = ["100"]  # puedes agregar más
+soluciones_binarias = ["100", "101"]  # puedes agregar más
 estados_marcados = [construir_ket(b) for b in soluciones_binarias]
 M = len(estados_marcados)                 # Número de soluciones marcadas (puedes ajustar si hay más)
 
