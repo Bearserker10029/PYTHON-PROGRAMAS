@@ -342,7 +342,7 @@ def construir_oraculo(estados_marcados, identidad):
     Uw = sumar(identidad, escalar(W_total, -2))
     return Uw
 
-def reducir_qubit(estado, qubit_index, n_qubits=3):
+def reducir_qubit(estado, qubit_index, n_qubits):
     rho = np.outer(estado, np.conj(estado))
     rho_reducido = np.zeros((2, 2), dtype=complex)
     dim = 2 ** n_qubits

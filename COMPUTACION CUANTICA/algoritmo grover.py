@@ -7,16 +7,18 @@ from matplotlib.animation import FuncAnimation
 from multiprocessing import Process
 
 # Número de qubits
-n_qbits = 3
+n_qbits = 5
 N = 2 ** n_qbits  # Total de estados posibles
 
 # --- Lista de soluciones como cadenas binarias ---
-soluciones_binarias = ["100", "001"]  # puedes agregar más
+soluciones_binarias = ["10000", "00100","00001"]  # puedes agregar más
 estados_marcados = [construir_ket(b) for b in soluciones_binarias]
 M = len(estados_marcados)                 # Número de soluciones marcadas (puedes ajustar si hay más)
 
 # Estado uniforme |s> = h⊗h⊗h |000>
-estado_s = tensorial(h(ket0), tensorial(h(ket0), h(ket0)))
+estado_s = h(ket0)
+for _ in range(n_qbits - 1):
+    estado_s = tensorial(h(ket0), estado_s)
 # ver(estado_s)
 
 # Identidad en espacio de n_qbits
@@ -65,7 +67,6 @@ estados_np = [np.array([x[0] for x in est], dtype=complex) for est in estados_po
 def bloch_animacion():
     fig = plt.figure(figsize=(4 * n_qbits, 6))
     axes = [fig.add_subplot(1, n_qbits, i+1, projection='3d') for i in range(n_qbits)]
-
     # Dibujar esferas de Bloch vacías
     def plot_bloch_sphere(ax):
         u, v = np.mgrid[0:2*np.pi:100j, 0:np.pi:100j]
@@ -88,7 +89,7 @@ def bloch_animacion():
     # Función de actualización por frame
     def update(frame):
         for i in range(n_qbits):
-            ket = reducir_qubit(estados_np[frame], i)
+            ket = reducir_qubit(estados_np[frame], i, n_qbits)
             bloch_vec = ket_to_bloch_vector(ket)
 
             trayectorias[i].append(bloch_vec)
