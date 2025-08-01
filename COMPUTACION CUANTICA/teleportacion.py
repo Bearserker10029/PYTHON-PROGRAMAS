@@ -57,6 +57,11 @@ print(f"Resultado de medición: {resultado}")
 # --- Ejecutar ambas visualizaciones en paralelo ---
 if __name__ == "__main__":
     n_qubits = 3
+    # Calcular la fidelidad del qubit teletransportado con respecto al estado original
+    fidelidad = abs(np.vdot(psi, qubit_teletransportado))**2
+    print(f"Fidelidad: {fidelidad:.4f}")
+    
+    # Graficar los estados
     p1 = Process(target=graficar, args=(psi,"Estado original |ψ⟩"))
     p2 = Process(target=graficar, args=(qubit_teletransportado,"Qubit teletransportado"))
     p3 = Process(target=bloch_animacion, args=(n_qubits, estados_np,))
@@ -66,6 +71,4 @@ if __name__ == "__main__":
     p1.join()
     p2.join()
     p3.join()
-    # Calcular la fidelidad del qubit teletransportado con respecto al estado original
-    fidelidad = abs(np.vdot(psi, qubit_teletransportado))**2
-    print(f"Fidelidad: {fidelidad:.4f}")
+    
