@@ -5,6 +5,8 @@ import math
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
 
 ver = vermatrizf
 
@@ -241,7 +243,7 @@ def reset(vector, qubitNro):    #Retorna qubit resultante después de resetear q
     return(q)                               #retorna el nuevo vector con el qubitNro en estado |0>
 
 
-def graficar(qubit):   #Grafica qubit (amplitudes vector de estado y probas)
+def graficar(qubit,titulo="Vector de estado del qubit"):   #Grafica qubit (amplitudes vector de estado y probas)
     if (len(qubit[0]) > 1): #si no es vector columna retorna 0 y termina
         return(0)
     digitos=int(math.log(len(qubit),2))
@@ -255,7 +257,7 @@ def graficar(qubit):   #Grafica qubit (amplitudes vector de estado y probas)
         eje_y1[i]=((eje_y1[i]*eje_y1[i].conjugate())**0.5).real
 
     fig, (w1, w2, w3) = plt.subplots(3,1)  #Figura con 3 gráficos en 3 filas 1 columna
-    fig.suptitle("Vector de estado del qubit")
+    fig.suptitle(titulo)
 
     #fila 1 columna 1 Ventana 1
     p1 = w1.bar(eje_x, eje_y1, label="Amplitudes", color="blue")
@@ -359,7 +361,7 @@ def reducir_qubit(estado, qubit_index, n_qubits):
     vals, vecs = np.linalg.eigh(rho_reducido)
     idx = np.argmax(vals)
     ket_reducido = vecs[:, idx]
-    return ket_reducido
+    return [[amp] for amp in ket_reducido]
 
 def ket_to_bloch_vector(ket):
     a, b = ket[0], ket[1]
@@ -367,3 +369,109 @@ def ket_to_bloch_vector(ket):
     y = 2 * np.imag(np.conj(b) * a)
     z = np.abs(a)**2 - np.abs(b)**2
     return [x, y, z]
+
+def bloch_animacion(n_qubits, estados_np):
+    fig = plt.figure(figsize=(4 * n_qubits, 6))
+    axes = [fig.add_subplot(1, n_qubits, i+1, projection='3d') for i in range(n_qubits)]
+    # Dibujar esferas de Bloch vacías
+    def plot_bloch_sphere(ax):
+        u, v = np.mgrid[0:2*np.pi:100j, 0:np.pi:100j]
+        x = np.cos(u)*np.sin(v)
+        y = np.sin(u)*np.sin(v)
+        z = np.cos(v)
+
+        # Esfera de Bloch
+        ax.plot_surface(x, y, z, color='lightblue', alpha=0.3, linewidth=0)
+        
+        # Malla sobre la esfera
+        ax.plot_wireframe(x, y, z, color='gray', linewidth=0.3, alpha=0.4)
+
+        # Ejes X, Y, Z
+        ax.quiver(0, 0, 0, 1, 0, 0, color='green', linewidth=1.5)  # X
+        ax.quiver(0, 0, 0, 0, 1, 0, color='blue', linewidth=1.5)   # Y
+        ax.quiver(0, 0, 0, 0, 0, 1, color='black', linewidth=1.5)  # Z
+
+        # Líneas de referencia (trayectoria ejes)
+        ax.plot([0, 1], [0, 0], [0, 0], linestyle='--', color='green', alpha=0.6)
+        ax.plot([0, 0], [0, 1], [0, 0], linestyle='--', color='blue', alpha=0.6)
+        ax.plot([0, 0], [0, 0], [0, 1], linestyle='--', color='black', alpha=0.6)
+
+        # Etiquetas para |0⟩ y |1⟩
+        ax.text(0, 0, 1.2, r"$|0\rangle$", fontsize=12, color='black')
+        ax.text(0, 0, -1.4, r"$|1\rangle$", fontsize=12, color='black')
+
+        # Ajustes generales
+
+        ax.set_xlim([-1.2, 1.2])
+        ax.set_ylim([-1.2, 1.2])
+        ax.set_zlim([-1.5, 1.5])
+        ax.axis('off')
+
+    def set_aspect_equal_3d(ax):
+        extents = np.array([getattr(ax, f'get_{dim}lim')() for dim in 'xyz'])
+        centers = np.mean(extents, axis=1)
+        max_range = np.max(extents[:,1] - extents[:,0]) / 2
+
+        for ctr, dim in zip(centers, 'xyz'):
+            getattr(ax, f'set_{dim}lim')(ctr - max_range, ctr + max_range)
+
+    for ax in axes:
+        plot_bloch_sphere(ax)
+        set_aspect_equal_3d(ax)
+
+    # Inicializar vectores y trayectorias
+    vectors = [None] * n_qubits
+    trayectorias = [[] for _ in range(n_qubits)]
+
+    # Función de actualización por frame
+    def update(frame):
+        for i in range(n_qubits):
+            ket = reducir_qubit(estados_np[frame], i, n_qubits)
+            bloch_vec = ket_to_bloch_vector(ket)
+
+            trayectorias[i].append(bloch_vec)
+            if vectors[i] is not None:
+                vectors[i].remove()
+            trayectoria = np.array(trayectorias[i])
+            axes[i].plot3D(trayectoria[:,0], trayectoria[:,1], trayectoria[:,2],
+                           color='cyan', linewidth=1.5, alpha=0.6)    
+            vectors[i] = axes[i].quiver(0, 0, 0, *bloch_vec, color='red', linewidth=2)
+            axes[i].set_title(f'Qubit {i} - Iteración {frame}')
+        return vectors
+
+    anim = FuncAnimation(fig, update, frames=len(estados_np), interval=800, blit=False, repeat=False)
+    plt.tight_layout()
+    plt.show()
+
+def medir_parcial(estado, qubits_a_medir):
+    # Simula medición de qubits específicos en un estado de n qubits
+    # Devuelve: resultado medido (como string), estado proyectado y normalizado
+    resultados = []
+    n = int(math.log2(len(estado)))  # número de qubits
+    for i in range(len(estado)):
+        binario = format(i, f'0{n}b')
+        resultado = ''.join([binario[q] for q in qubits_a_medir])
+        resultados.append(resultado)
+
+    # Agrupar amplitudes por resultado
+    resultado_dict = {}
+    for i, r in enumerate(resultados):
+        if r not in resultado_dict:
+            resultado_dict[r] = []
+        resultado_dict[r].append(i)
+
+    # Calcular probabilidades
+    probas = {}
+    for r, indices in resultado_dict.items():
+        probas[r] = sum(abs(estado[i][0])**2 for i in indices)
+
+    # Elegir resultado según probabilidad
+    elegido = random.choices(list(probas.keys()), weights=list(probas.values()))[0]
+
+    # Proyectar y normalizar
+    nuevo_estado = [[0] for _ in range(len(estado))]
+    for i in resultado_dict[elegido]:
+        nuevo_estado[i][0] = estado[i][0]
+    nuevo_estado = normalizar(nuevo_estado)
+
+    return elegido, nuevo_estado
