@@ -13,22 +13,22 @@ phi_angle = np.random.uniform(0, 2*np.pi) # Ángulo azimutal
 alpha = np.cos(theta/2)
 beta = np.sin(theta/2) * np.exp(1j * phi_angle)
 
-psi=sumar(escalar(ket0, alpha), escalar(ket1, beta))  # Estado inicial |0> + |1>
+psi=sumar(escalar(ket0, alpha), escalar(ket1, beta))  # Estado inicial alpha|0> + beta|1>
 # ver (psi)
 
-phi=escalar(sumar(ket00, ket11),1/math.sqrt(2))  # Estado inicial |00> + |11>
+phi=escalar(sumar(ket00, ket11),1/math.sqrt(2))  # Estado inicial (|00> + |11>) / sqrt(2)
 # ver(phi)
 
-psi0=tensorial(psi,phi)
+psi0=tensorial(psi,phi) # Estado combinado |ψ⟩ ⊗ (|00⟩ + |11⟩) / sqrt(2)
 # ver(psi0)
 
 psi1=multiplicar(cxNqubit(3, 0, 1), psi0)  # Aplicar la compuerta CNOT
 # ver(psi1)
 
-H1=tensorial(H,tensorial(I, I))  # Aplicar la compuerta Hadamard al primer qubit
+H1=tensorial(H,tensorial(I, I)) # Compuerta Hadamard al primer qubit
 # ver(H1)
 
-psi2=multiplicar(H1, psi1)  # Aplicar Hadamard al primer qubit
+psi2=multiplicar(H1, psi1) # Aplicar Hadamard al primer qubit
 # ver(psi2)
 
 def correccion_condicional(estado, resultado):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     
     # Graficar los estados
     p1 = Process(target=graficar, args=(psi,"Estado original |ψ⟩"))
-    p2 = Process(target=graficar, args=(qubit_teletransportado,"Qubit teletransportado"))
+    p2 = Process(target=graficar, args=(qubit_teletransportado,"Qubit teletransportado",))
     p3 = Process(target=bloch_animacion, args=(n_qubits, estados_np,))
     p1.start()
     p2.start()
